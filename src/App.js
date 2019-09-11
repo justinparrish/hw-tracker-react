@@ -31,29 +31,35 @@ const classesList = (classItem) => {
 class ClassForm extends React.Component {
 
   state = {
-    newAssignment: "",
-    newGrade: 0
+    newAssignment: { asmntName: "", grade: 0 }
   }
 
-  handleAssignInput = (evnt) => {
-    this.setState({ newAssignment: evnt.target.value})
-  }
+  handleInput = (evnt) => {
+    let newAssignment = { ...this.state.newAssignment }
 
-  handleGradeInput = (evnt) => {
-    this.setState({newGrade: evnt.target.value })
+    newAssignment[evnt.target.name] = evnt.target.value
+
+    this.setState({ newAssignment })
   }
 
   HandleSubmit = (evnt) => {
     evnt.preventDefault();
-
+    console.log(this.state)
     this.props.addNewAssignment(this.state.newAssignment)
   }
 
   render() {
     return (
       <form onSubmit={this.HandleSubmit}>
-        <input type="text" onChange={this.handleAssignInput} placeholder="Assignment Name" />
-        <input type="number" onChange={this.handleGradeInput} placeholder="Grade" />
+        <input type="text" placeholder="Assignment Name"
+          name="asmntName"
+          // value={this.state.newAssignment}
+          onChange={this.handleInput} />
+
+        <input type="number" placeholder="Grade"
+          name="grade"
+          // value={this.state.newGrade}
+          onChange={this.handleInput} />
         <input type="submit" value="Add" />
       </form>
     )
@@ -116,16 +122,19 @@ class App extends React.Component {
       */
     ]
   }
-  addAssignment = (newAssignmentInfo) => {
+  addAssignment = (newAssignment) => {
 
-    let classes = { ...this.state.classOne }
+    let classes = { ...this.state.classOne[0] }
 
-    classes[0].classListOfAsmnts.push(newAssignmentInfo)
+    classes.classListOfAsmnts.push(newAssignment)
 
-    this.setState(classes)
-    console.log(this.setState(classes))
+    newAssignment.grade = Number.parseFloat(newAssignment.grade)
+
+    this.setState({ classes })
+    // console.log(this.state)
   }
   render() {
+    // console.log(this.state)
     return (
       <div>
         <h1 id="mainHeader">Homework Tracker</h1>
